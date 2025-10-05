@@ -1,0 +1,439 @@
+:root {
+  /* Größe/Skalierung */
+  --size: 320px; /* Ø der Uhr */
+  --bezel: 18px; /* Breite der Lünette */
+  --rehaut: 6px; /* Innenring zwischen Lünette und Zifferblatt */
+
+  /* Gold-/Champagner-Farbwelt */
+  --gold-hi: #f8e3a9; /* Glanzlichter */
+  --gold: #d4b571; /* Grundton */
+  --gold-lo: #9b7840; /* Schatten */
+
+  --dial-outer: #efe2c2; /* Zifferblatt außen (Champagner) */
+  --dial-inner: #e3cf9f; /* Zifferblatt innen (dunkler) */
+
+  --print: #14100a; /* Druckfarbe */
+  --hand: #19130b; /* Stunden/Minutenzeiger */
+  --sec: #b22222; /* Sekundenzeiger */
+
+  --date-wheel: #fff; /* Datumsscheibe */
+  --date-text: #000; /* Datumstext */
+
+  --index-w: 9px; /* Breite der Stabindizes */
+  --index-h: 30px; /* Höhe der Stabindizes */
+  --rail: 12px; /* Minutenbahn-Stärke */
+}
+
+* {
+  box-sizing: border-box;
+}
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(1100px 700px at 50% 50%, black, gray);
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+  color: var(--print);
+  min-height: 100vh;
+}
+
+.bg {
+  position: absolute;
+  top: calc(50% - 0.75rem);
+  left: 0;
+  display: block;
+  font-weight: 800;
+  font-size: 20vw;
+  text-align: center;
+  text-transform: uppercase;
+  transform: translateY(-50%);
+  z-index: 100;
+  opacity: 0.5;
+}
+
+.bg {
+  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.4); /* Kontur: 2px schwarz */
+  -webkit-text-fill-color: rgba(0, 0, 0, 0.6); /* Innenfarbe */
+  text-shadow: 0 0 1rem rgba(0, 0, 0, 1);
+}
+
+.bg .x1 {
+  display: block;
+  font-size: 120%;
+}
+
+.bg .s {
+  opacity: 0.3;
+}
+
+.bg .x1a {
+  display: block;
+  font-size: 65%;
+}
+
+.bg .x2 {
+  display: block;
+  height: calc(var(--size) + 4rem);
+}
+
+.bg .x3 {
+  display: block;
+  font-size: 85%;
+}
+
+.watch {
+  position: relative;
+  width: var(--size);
+  height: var(--size);
+  border-radius: 50%;
+  filter: drop-shadow(0 24px 40px rgba(0, 0, 0, 0.18));
+  box-shadow: 0 0 1rem rgba(0, 0, 0, 0.5), 0 0 2rem rgba(0, 0, 0, 0.5);
+}
+
+.watch-band {
+  position: fixed;
+  width: calc(var(--size) * 0.65);
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.watch-band::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: block;
+  border: 1px solid white;
+  width: calc(var(--size) * 0.9);
+  border-radius: 2rem;
+  background: var(--gold);
+  height: calc(var(--size) * 1.1);
+}
+
+/* ───────── Lünette (fluted, Gold) */
+.bezel {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: repeating-conic-gradient(
+    from -2deg,
+    var(--gold-lo) 0 3deg,
+    var(--gold) 4deg 7deg,
+    var(--gold-hi) 8deg 9deg,
+    var(--gold) 9deg 14deg
+  );
+  mask: radial-gradient(
+    circle at 50% 50%,
+    transparent calc(50% - var(--bezel)),
+    #000 calc(50% - var(--bezel) + 1px)
+  );
+}
+
+/* Rehaut (innen abfallend) */
+.rehaut {
+  position: absolute;
+  inset: calc(var(--bezel) - 1px);
+  border-radius: 50%;
+  background: conic-gradient(
+      from 120deg,
+      var(--gold),
+      var(--gold-lo),
+      var(--gold-lo),
+      var(--gold) 45deg
+    ),
+    radial-gradient(circle at 40% 35%, #fff, #ece3cf);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.5),
+    inset 0 0 28px rgba(0, 0, 0, 0.35);
+}
+
+/* ───────── Zifferblatt (Sunburst Champagner) */
+.dial {
+  position: absolute;
+  inset: calc(var(--bezel) + var(--rehaut));
+  border-radius: 50%;
+  overflow: hidden;
+  background: radial-gradient(
+      140% 100% at 30% 30%,
+      rgba(255, 255, 255, 0.5),
+      transparent 55%
+    ),
+    conic-gradient(
+      from -20deg,
+      rgba(255, 255, 255, 0.35),
+      rgba(0, 0, 0, 0) 70deg
+    ),
+    radial-gradient(circle at 50% 55%, var(--dial-outer), var(--dial-inner) 60%);
+  box-shadow: inset 0 0 42px rgba(0, 0, 0, 0.08);
+}
+
+/* Minutenbahn */
+.rail {
+  position: absolute;
+  inset: calc(var(--bezel) + var(--rehaut) + 12px);
+  border-radius: 50%;
+}
+.rail::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: repeating-conic-gradient(
+    from 0deg,
+    #352916 0 1deg,
+    transparent 1deg 6deg
+  );
+  mask: radial-gradient(
+    circle at 50% 50%,
+    transparent calc(100% - var(--rail)),
+    #000 100%
+  );
+  opacity: 0.9;
+}
+.rail::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 0deg,
+    transparent,
+    #000 0deg 2deg,
+    transparent 2deg 30deg
+  );
+  mask: radial-gradient(
+    circle at 50% 50%,
+    transparent calc(100% - var(--rail) + 2px),
+    #000 100%
+  );
+  opacity: 0.35;
+}
+
+/* Indizes (Stäbe) – 3 Uhr frei fürs Datum */
+.indices {
+  position: absolute;
+  inset: 0;
+}
+.index {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: calc(var(--index-w) * 0.65);
+  height: calc(var(--index-h) * 0.85);
+  border-radius: 20%;
+  background: linear-gradient(black 1%, green 2%, black 60%);
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.4));
+}
+
+/* Day-Aperture (dezenter, integrierter Look) */
+.day-wrap {
+  position: absolute;
+  left: 50%;
+  top: calc(var(--bezel) + var(--rehaut) - 0.5rem);
+  transform: translateX(-50%);
+  width: calc(var(--size) * 0.22);
+  height: 20px;
+} /* schmaler & etwas kürzer */
+.day-arc {
+  position: absolute;
+  inset: 0;
+  border-radius: 5rem;
+  background: linear-gradient(
+    #f8f5ec,
+    #eee6d5
+  ); /* näher am Dial statt reinem Weiß */
+  color: rgba(20, 16, 10, 0.9);
+  border: 1px solid rgba(0, 0, 0, 0.14); /* dünnerer Rahmen */
+  display: grid;
+  place-items: center;
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 500; /* weniger fett */
+  letter-spacing: 0.05em; /* enger */
+  font-size: 12px; /* kleiner */
+  text-transform: uppercase;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.06);
+  opacity: 0.9;
+}
+
+/* Datum + Cyclops bei 3 Uhr (weiter nach rechts) */
+.date-wrap {
+  position: absolute;
+  right: calc(var(--bezel) + var(--rehaut) - 12px);
+  top: 50%;
+  transform: translateY(-50%);
+  width: 58px;
+  height: 40px;
+}
+.date {
+  position: absolute;
+  inset: 0;
+  background: var(--date-wheel);
+  border: 2px solid rgba(0, 0, 0, 0.25);
+  border-radius: 6px;
+  display: grid;
+  place-items: center;
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--date-text);
+}
+.cyclops {
+  position: absolute;
+  inset: -3px;
+  border-radius: 8px;
+  background: linear-gradient(
+    to bottom right,
+    rgba(255, 255, 255, 0.6),
+    rgba(255, 255, 255, 0.15) 40%,
+    rgba(255, 255, 255, 0.5)
+  );
+  box-shadow: 0 5px 9px rgba(0, 0, 0, 0.22) inset, 0 2px 9px rgba(0, 0, 0, 0.12);
+  pointer-events: none;
+}
+.date .zoom {
+  transform: scale(1.2);
+} /* minimal dezenter als vorher */
+
+/* Zeiger */
+.hand {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -100%) rotate(0deg);
+  transform-origin: 50% 100%;
+  will-change: transform;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.35));
+}
+.hand.hour {
+  width: 12px;
+  height: calc(var(--size) * 0.25);
+  background: linear-gradient(var(--gold) 30%, var(--gold-hi), var(--gold-lo));
+  border: 1px solid var(--gold-lo);
+  box-shadow: 0 0 2rem 0.5rem rgba(0, 0, 0, 0.125);
+  border-radius: 10px;
+  overflow: clip;
+}
+
+.hand.hour::after,
+.hand.minute:after {
+  content: "";
+  display: block;
+  width: 50%;
+  height: 90%;
+  background: black;
+  opacity: 0.06;
+  margin: 5%;
+}
+
+.hand.minute {
+  width: 9px;
+  height: calc(var(--size) * 0.34);
+  border: 1px solid var(--gold-lo);
+  background: linear-gradient(var(--gold) 50%, var(--gold-hi), var(--gold-lo));
+  box-shadow: 0 0 2rem 0.5rem rgba(0, 0, 0, 0.125);
+
+  border-radius: 10px;
+}
+.hand.second {
+  width: 2px;
+  height: calc(var(--size) * 0.4);
+  background: var(--sec);
+  border-radius: 2px;
+}
+.hand.second::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -18px;
+  width: 2px;
+  height: 26px;
+  transform: translateX(-50%);
+  background: var(--sec);
+  border-radius: 2px;
+  opacity: 0.95;
+}
+
+/* Mittelkappe */
+.hub {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 18px;
+  height: 18px;
+  background: #0d0a06;
+  border: 3px solid #fff;
+  border-radius: 50%;
+  z-index: 2;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.25);
+}
+
+/* Schmuck-Icon (neutral) unter dem Day-Fenster */
+.brand {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  left: 50%;
+  top: 3rem;
+  transform: translateX(-50%);
+  text-align: center;
+  fill: url(#goldGrad);
+}
+
+.brand svg {
+  fill: var(--gold-lo);
+  height: 2rem;
+  filter: drop-shadow(0 1px 0 rgba(255, 255, 255, 0.25))
+    drop-shadow(0 2px 2px rgba(0, 0, 0, 0.125));
+}
+
+.brand-name {
+  font-size: 110%;
+  font-weight: 600;
+  color: var(--gold-lo);
+  text-transform: uppercase;
+  font-family: Georgia, "Times New Roman", serif;
+  filter: drop-shadow(0 1px 0 rgba(255, 255, 255, 0.25))
+    drop-shadow(0 2px 2px rgba(0, 0, 0, 0.125));
+}
+
+.brand-model {
+  font-size: 60%;
+  opacity: 0.4;
+  padding-block: 0.125rem;
+  border-radius: 0.25rem;
+  background: var(--gold);
+  margin-top: 0.25rem;
+}
+
+/* Glasreflexe */
+.glass {
+  position: absolute;
+  inset: calc(var(--bezel) + var(--rehaut));
+  border-radius: 50%;
+  pointer-events: none;
+  background: linear-gradient(
+      110deg,
+      rgba(255, 255, 255, 0.15) 0 30%,
+      rgba(255, 255, 255, 0) 40% 100%
+    ),
+    radial-gradient(
+      80% 50% at 30% 0%,
+      rgba(255, 255, 255, 0.25),
+      rgba(255, 255, 255, 0)
+    );
+  mix-blend-mode: screen;
+}
+
+/* Responsiv */
+.watch[data-size="sm"] {
+  --size: 280px;
+}
+.watch[data-size="lg"] {
+  --size: 460px;
+}
